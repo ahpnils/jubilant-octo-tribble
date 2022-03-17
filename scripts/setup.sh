@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 apt -qq update &&
 apt -qq -y install fdisk xfsprogs &&
