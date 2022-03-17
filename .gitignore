@@ -33,6 +33,11 @@ plan.out
 # Ignore credentials file
 credentials.json
 
-# Ignore VIm backup files
+# Ignore Terraform lock file
+.terraform.lock.hcl
+
+# Ignore VIm files
 *~
 .*~
+*.swp
+.*.swp
