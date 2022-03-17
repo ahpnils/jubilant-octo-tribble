@@ -33,4 +33,5 @@ plan.out
 credentials.json
 
 # Ignore VIm backup files
-~*
+*~
+.*~
