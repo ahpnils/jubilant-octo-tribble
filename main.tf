@@ -56,24 +56,11 @@ resource "google_compute_instance" "vm_instance" {
     }
   }
 
-  connection {
-    type = "ssh"
-    user = var.ssh_user
-    host = self.network_interface.0.access_config.0.nat_ip
+  provisioner "local-exec" {
+    when = destroy
+    command = "ssh-keygen -R ${self.network_interface.0.access_config.0.nat_ip}"
   }
 
-  provisioner "file" {
-    source = "scripts/setup.sh"
-    destination = "/tmp/setup.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x /tmp/setup.sh",
-      "sudo sed -i -e 's/\r$//' /tmp/setup.sh", # Remove the spurious CR characters.
-      "sudo /tmp/setup.sh",
-    ]
-  }
 }
 
 resource "google_compute_firewall" "http_firewall" {
@@ -112,5 +99,25 @@ resource "google_compute_disk" "data_disk" {
 resource "google_compute_attached_disk" "vm_attached_disk" {
   disk     = google_compute_disk.data_disk.id
   instance = google_compute_instance.vm_instance.id
+
+
+  connection {
+    type = "ssh"
+    user = var.ssh_user
+    host = google_compute_instance.vm_instance.network_interface.0.access_config.0.nat_ip
+  }
+
+  provisioner "file" {
+    source = "scripts/setup.sh"
+    destination = "/tmp/setup.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/setup.sh",
+      "sudo sed -i -e 's/\r$//' /tmp/setup.sh", # Remove the spurious CR characters.
+      "sudo /tmp/setup.sh",
+    ]
+  }
 }
 
