@@ -41,7 +41,7 @@ resource "google_compute_instance" "vm_instance" {
   }
 
   metadata = {
-    ssh-keys       = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
+    ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
   }
 
   boot_disk {
@@ -57,7 +57,7 @@ resource "google_compute_instance" "vm_instance" {
   }
 
   provisioner "local-exec" {
-    when = destroy
+    when    = destroy
     command = "ssh-keygen -R ${self.network_interface.0.access_config.0.nat_ip}"
   }
 
@@ -108,7 +108,7 @@ resource "google_compute_attached_disk" "vm_attached_disk" {
   }
 
   provisioner "file" {
-    source = "scripts/setup.sh"
+    source      = "scripts/setup.sh"
     destination = "/tmp/setup.sh"
   }
 
