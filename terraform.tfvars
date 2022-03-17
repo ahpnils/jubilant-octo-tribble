@@ -1,5 +1,0 @@
-project          = "stream-project-342120"
-credentials_file = "stream-project-342120-2b90c643dedb.json"
-ssh_user         = "nils"
-ssh_pub_key_file = "~/.ssh/id_rsa.pub"
-os_image	 = "debian-cloud/debian-11"
