@@ -1,0 +1,5 @@
+project          = "yourprojectname"
+credentials_file = "yourcredentials.json"
+ssh_user         = "yoursshusername"
+ssh_pub_key_file = "~/.ssh/id_rsa.pub"
+os_image	 = "debian-cloud/debian-11"
