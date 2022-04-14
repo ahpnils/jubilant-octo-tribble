@@ -1,0 +1,6 @@
+---
+- name: First Nginx Playbook
+  hosts: foo
+
+  roles:
+  - { role: webserver }
