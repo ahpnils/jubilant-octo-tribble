@@ -1,24 +1,18 @@
 ---
 - name: First Nginx Playbook
   hosts: foo
+  vars:
+    remote_content_repo: https://github.com/ahpnils/anotherhomepage.org.git
   
   tasks:
+    - name: install software dependencies
+      package: name="git" state=present
     - name: install Nginx from OS repos
       import_role:
         name: nginxinc.nginx
       vars:
         nginx_manage_repo: false
         nginx_install_from: os_repository
-    - name: Create Custom Index Page
-      import_role:
-        name: nginxinc.nginx_config
-      vars:
-        nginx_config_html_demo_template_enable: true
-        nginx_config_html_demo_template:
-          - template_file: www/index.html.j2
-            deployment_location: /var/www/html/index.html
-            web_server_name: AHP NGINX Super Web Server
-            backup: false
     - name: Create Custom Nginx configurations
       import_role:
         name: nginxinc.nginx_config
@@ -43,5 +37,21 @@
                      core:
                        index: index.html index.htm index.nginx-debian.html
                        root: /var/www/html
-
+    - name: Clone HTML content repo
+      git:
+        repo: "{{ remote_content_repo }}"
+        dest: /var/www/repo
+        clone: yes
+        update: yes
+    - name: Clean Document Root
+      ansible.builtin.file:
+        path: /var/www/html
+        state: absent
+    - name: Symlink HTML content repo to Document Root
+      ansible.builtin.file:
+        src: /var/www/repo/content
+        dest: /var/www/html
+        owner: root
+        group: root
+        state: link
 
