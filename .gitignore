@@ -36,6 +36,10 @@ credentials.json
 # Ignore Terraform lock file
 .terraform.lock.hcl
 
+# Ansible stuff
+
+inventory.yml
+
 # Ignore VIm files
 *~
 .*~

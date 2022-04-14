@@ -1,0 +1,7 @@
+all:
+  children:
+    gcp:
+      hosts:
+        foo:
+          ansible_host: A.B.C.D
+
