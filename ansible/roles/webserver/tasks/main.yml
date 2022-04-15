@@ -1,5 +1,42 @@
-- name: install software dependencies
-  package: name="git" state=present
+- name: Install software dependencies
+  package: name="git,rsync" state=present
+
+- name: Clone HTML content repo
+  git:
+    repo: "{{ remote_content_repo }}"
+    dest: /var/www/repo
+    clone: yes
+    update: yes
+
+- name: Handle Document Root part 1
+  stat:
+    path: /var/www/html
+  register: document_root_type
+
+- name: Handle Document Root part 2
+  ansible.builtin.file:
+    path: /var/www/html
+    state: absent
+  when: not document_root_type.stat.isdir
+
+- name: Handle Document Root part 3
+  ansible.builtin.file:
+    path: /var/www/html
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+    follow: no
+    force: yes
+
+- name: Synchronize HTML content to Document Root
+  ansible.posix.synchronize:
+    src: /var/www/repo/
+    dest: /var/www/html/
+    delete: yes
+    recursive: yes
+  delegate_to: "{{ inventory_hostname }}"
+
 - name: install Nginx from OS repos
   import_role:
     name: nginxinc.nginx
@@ -30,20 +67,3 @@
                  core:
                    index: index.html index.htm index.nginx-debian.html
                    root: /var/www/html
-- name: Clone HTML content repo
-  git:
-    repo: "{{ remote_content_repo }}"
-    dest: /var/www/repo
-    clone: yes
-    update: yes
-- name: Clean Document Root
-  ansible.builtin.file:
-    path: /var/www/html
-    state: absent
-- name: Symlink HTML content repo to Document Root
-  ansible.builtin.file:
-    src: /var/www/repo/content
-    dest: /var/www/html
-    owner: root
-    group: root
-    state: link
