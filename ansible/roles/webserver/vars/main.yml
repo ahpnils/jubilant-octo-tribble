@@ -1,1 +1,4 @@
+www_base: /var/www
+docroot: "{{ www_base }}/html"
+local_content_repo: "{{ www_base }}/repo"
 remote_content_repo: https://github.com/ahpnils/anotherhomepage.org.git
