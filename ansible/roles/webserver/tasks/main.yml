@@ -17,7 +17,7 @@
   ansible.builtin.file:
     path: /var/www/html
     state: absent
-  when: not document_root_type.stat.isdir
+  when: document_root_type.stat.lnk is defined 
 
 - name: Handle Document Root part 3
   ansible.builtin.file:
@@ -31,7 +31,7 @@
 
 - name: Synchronize HTML content to Document Root
   ansible.posix.synchronize:
-    src: /var/www/repo/
+    src: /var/www/repo/content/
     dest: /var/www/html/
     delete: yes
     recursive: yes
